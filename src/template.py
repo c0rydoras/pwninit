@@ -1,29 +1,34 @@
 #!/usr/bin/env python3
 
-from pwn import *
+from pwn import ELF, context, args, gdb, remote, process, p64, flat, cyclic
 
 {bindings}
 
 context.binary = {bin_name}
 
+GDBSCRIPT = """
+dprintf malloc, "malloc(%zu)\\n", $rdi
+dprintf free, "free(%p)\\n", $rdi
+""".strip()
+
 
 def conn():
-    if args.LOCAL:
-        r = process({proc_args})
-        if args.GDB:
-            gdb.attach(r)
+    if args.REMOTE:
+        rem = remote("addr", 1337)
     else:
-        r = remote("addr", 1337)
+        rem = process({proc_args})
+        if not args.NO_DEBUG:
+            gdb.attach(rem, gdbscript=GDBSCRIPT)
 
-    return r
+    return rem
 
 
 def main():
-    r = conn()
+    rem = conn()
 
     # good luck pwning :)
 
-    r.interactive()
+    rem.interactive()
 
 
 if __name__ == "__main__":
