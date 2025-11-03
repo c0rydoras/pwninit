@@ -8,6 +8,7 @@ mod libc_version;
 pub mod opts;
 mod patch_bin;
 mod pwninit;
+mod rop_gadgets;
 mod set_exec;
 mod solvepy;
 mod unstrip_libc;

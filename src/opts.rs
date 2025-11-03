@@ -78,6 +78,10 @@ pub struct Opts {
     /// Disable generating template solve script
     #[structopt(long)]
     pub no_template: bool,
+
+    /// Extract ROP gadgets
+    #[structopt(long, short = "r")]
+    pub rop: bool,
 }
 
 impl Opts {

@@ -1,6 +1,7 @@
 use crate::maybe_visit_libc;
 use crate::opts;
 use crate::patch_bin;
+use crate::rop_gadgets;
 use crate::set_bin_exec;
 use crate::set_ld_exec;
 use crate::solvepy;
@@ -28,6 +29,9 @@ pub enum Error {
 
     #[snafu(display("failed making template solve script: {}", source))]
     Solvepy { source: solvepy::Error },
+
+    #[snafu(display("failed extracting ROP gadgets: {}", source))]
+    RopGadgets { source: rop_gadgets::Error },
 }
 
 pub type Result = std::result::Result<(), Error>;
@@ -55,6 +59,10 @@ pub fn run(opts: Opts) -> Result {
 
     if !opts.no_template {
         solvepy::write_stub(&opts).context(SolvepySnafu)?;
+    }
+
+    if opts.rop {
+        rop_gadgets::extract_rop_gadgets(&opts).context(RopGadgetsSnafu)?;
     }
 
     Ok(())
