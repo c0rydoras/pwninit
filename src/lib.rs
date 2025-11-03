@@ -35,7 +35,12 @@ use twoway::find_bytes;
 
 /// Detect if `path` is the provided pwn binary
 pub fn is_bin(path: &Path) -> elf::detect::Result<bool> {
-    Ok(is_elf(path)? && !is_libc(path)? && !is_ld(path)?)
+    let is_patched = path
+        .file_name()
+        .map(|name| name.to_string_lossy().ends_with("_patched"))
+        .unwrap_or(false);
+
+    Ok(is_elf(path)? && !is_libc(path)? && !is_ld(path)? && !is_patched)
 }
 
 /// Does the filename of `path` contain `pattern`?
