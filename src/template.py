@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
 
-from pwn import ELF, context, args, gdb, remote, process, p64, flat, cyclic
+from pwn import (
+    ELF,
+    args,
+    context,
+    cyclic,
+    flat,
+    gdb,
+    hexdump,
+    info,
+    p64,
+    pause,
+    process,
+    remote,
+    u64,
+)
+from pwn import str_input as input
 
 {bindings}
 
@@ -14,7 +29,7 @@ dprintf free, "free(%p)\\n", $rdi
 
 def conn():
     if args.REMOTE:
-        rem = remote("addr", 1337)
+        rem = remote("localhost", 1337)
     else:
         rem = process({proc_args})
         if not args.NO_DEBUG:
