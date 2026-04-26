@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from functools import partial
 from pwn import (
     ELF,
     args,
@@ -15,7 +16,6 @@ from pwn import (
     remote,
     u64,
 )
-from pwn import str_input as input
 
 {bindings}
 
@@ -40,8 +40,12 @@ def conn():
 
 def main():
     rem = conn()
+    sendlineafter = rem.sendlineafter
+    sendline = rem.sendline
+    send = rem.send
 
-    # good luck pwning :)
+    opt = partial(rem.sendlineafter, b">")
+    opt2 = partial(rem.sendlineafter, b":")
 
     rem.interactive()
 
